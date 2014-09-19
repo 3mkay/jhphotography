@@ -2,3 +2,11 @@
 #
 # Put your deployment settings here.
 #
+version: 1.0
+shared_folders:
+  - sites/default/files
+
+env_specific_files:
+  sites/default/settings.php:
+    production: settings.live.php
+    test: settings.test.php
