@@ -1,3 +1,5 @@
+docroot/sites/*/files/
+settings.php
 /config
 /private
 /tmp
