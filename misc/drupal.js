@@ -1,28 +1,27 @@
-
 /**
  * Override jQuery.fn.init to guard against XSS attacks.
  *
  * See http://bugs.jquery.com/ticket/9521
  */
 (function () {
-  var jquery_init = jQuery.fn.init;
-  jQuery.fn.init = function (selector, context, rootjQuery) {
-    // If the string contains a "#" before a "<", treat it as invalid HTML.
-    if (selector && typeof selector === 'string') {
-      var hash_position = selector.indexOf('#');
-      if (hash_position >= 0) {
-        var bracket_position = selector.indexOf('<');
-        if (bracket_position > hash_position) {
-          throw 'Syntax error, unrecognized expression: ' + selector;
+    var jquery_init = jQuery.fn.init;
+    jQuery.fn.init = function (selector, context, rootjQuery) {
+        // If the string contains a "#" before a "<", treat it as invalid HTML.
+        if (selector && typeof selector === 'string') {
+            var hash_position = selector.indexOf('#');
+            if (hash_position >= 0) {
+                var bracket_position = selector.indexOf('<');
+                if (bracket_position > hash_position) {
+                    throw 'Syntax error, unrecognized expression: ' + selector;
+                }
+            }
         }
-      }
-    }
-    return jquery_init.call(this, selector, context, rootjQuery);
-  };
-  jQuery.fn.init.prototype = jquery_init.prototype;
+        return jquery_init.call(this, selector, context, rootjQuery);
+    };
+    jQuery.fn.init.prototype = jquery_init.prototype;
 })();
 
-var Drupal = Drupal || { 'settings': {}, 'behaviors': {}, 'themes': {}, 'locale': {} };
+var Drupal = Drupal || {'settings': {}, 'behaviors': {}, 'themes': {}, 'locale': {}};
 
 /**
  * Set the variable that indicates if JavaScript behaviors should be applied
@@ -56,27 +55,27 @@ Drupal.jsEnabled = document.getElementsByTagName && document.createElement && do
  *   An element to attach behaviors to. If none is given, the document element
  *   is used.
  */
-Drupal.attachBehaviors = function(context) {
-  context = context || document;
-  if (Drupal.jsEnabled) {
-    // Execute all of them.
-    jQuery.each(Drupal.behaviors, function() {
-      this(context);
-    });
-  }
+Drupal.attachBehaviors = function (context) {
+    context = context || document;
+    if (Drupal.jsEnabled) {
+        // Execute all of them.
+        jQuery.each(Drupal.behaviors, function () {
+            this(context);
+        });
+    }
 };
 
 /**
  * Encode special characters in a plain-text string for display as HTML.
  */
-Drupal.checkPlain = function(str) {
-  str = String(str);
-  var replace = { '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;' };
-  for (var character in replace) {
-    var regex = new RegExp(character, 'g');
-    str = str.replace(regex, replace[character]);
-  }
-  return str;
+Drupal.checkPlain = function (str) {
+    str = String(str);
+    var replace = {'&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;'};
+    for (var character in replace) {
+        var regex = new RegExp(character, 'g');
+        str = str.replace(regex, replace[character]);
+    }
+    return str;
 };
 
 /**
@@ -97,33 +96,33 @@ Drupal.checkPlain = function(str) {
  * @return
  *   The translated string.
  */
-Drupal.t = function(str, args) {
-  // Fetch the localized version of the string.
-  if (Drupal.locale.strings && Drupal.locale.strings[str]) {
-    str = Drupal.locale.strings[str];
-  }
-
-  if (args) {
-    // Transform arguments before inserting them
-    for (var key in args) {
-      switch (key.charAt(0)) {
-        // Escaped only
-        case '@':
-          args[key] = Drupal.checkPlain(args[key]);
-        break;
-        // Pass-through
-        case '!':
-          break;
-        // Escaped and placeholder
-        case '%':
-        default:
-          args[key] = Drupal.theme('placeholder', args[key]);
-          break;
-      }
-      str = str.replace(key, args[key]);
+Drupal.t = function (str, args) {
+    // Fetch the localized version of the string.
+    if (Drupal.locale.strings && Drupal.locale.strings[str]) {
+        str = Drupal.locale.strings[str];
     }
-  }
-  return str;
+
+    if (args) {
+        // Transform arguments before inserting them
+        for (var key in args) {
+            switch (key.charAt(0)) {
+                // Escaped only
+                case '@':
+                    args[key] = Drupal.checkPlain(args[key]);
+                    break;
+                // Pass-through
+                case '!':
+                    break;
+                // Escaped and placeholder
+                case '%':
+                default:
+                    args[key] = Drupal.theme('placeholder', args[key]);
+                    break;
+            }
+            str = str.replace(key, args[key]);
+        }
+    }
+    return str;
 };
 
 /**
@@ -157,23 +156,23 @@ Drupal.t = function(str, args) {
  * @return
  *   A translated string.
  */
-Drupal.formatPlural = function(count, singular, plural, args) {
-  var args = args || {};
-  args['@count'] = count;
-  // Determine the index of the plural form.
-  var index = Drupal.locale.pluralFormula ? Drupal.locale.pluralFormula(args['@count']) : ((args['@count'] == 1) ? 0 : 1);
+Drupal.formatPlural = function (count, singular, plural, args) {
+    var args = args || {};
+    args['@count'] = count;
+    // Determine the index of the plural form.
+    var index = Drupal.locale.pluralFormula ? Drupal.locale.pluralFormula(args['@count']) : ((args['@count'] == 1) ? 0 : 1);
 
-  if (index == 0) {
-    return Drupal.t(singular, args);
-  }
-  else if (index == 1) {
-    return Drupal.t(plural, args);
-  }
-  else {
-    args['@count['+ index +']'] = args['@count'];
-    delete args['@count'];
-    return Drupal.t(plural.replace('@count', '@count['+ index +']'), args);
-  }
+    if (index == 0) {
+        return Drupal.t(singular, args);
+    }
+    else if (index == 1) {
+        return Drupal.t(plural, args);
+    }
+    else {
+        args['@count[' + index + ']'] = args['@count'];
+        delete args['@count'];
+        return Drupal.t(plural.replace('@count', '@count[' + index + ']'), args);
+    }
 };
 
 /**
@@ -195,12 +194,12 @@ Drupal.formatPlural = function(count, singular, plural, args) {
  *   Any data the theme function returns. This could be a plain HTML string,
  *   but also a complex object.
  */
-Drupal.theme = function(func) {
-  for (var i = 1, args = []; i < arguments.length; i++) {
-    args.push(arguments[i]);
-  }
+Drupal.theme = function (func) {
+    for (var i = 1, args = []; i < arguments.length; i++) {
+        args.push(arguments[i]);
+    }
 
-  return (Drupal.theme[func] || Drupal.theme.prototype[func]).apply(this, args);
+    return (Drupal.theme[func] || Drupal.theme.prototype[func]).apply(this, args);
 };
 
 /**
@@ -209,10 +208,10 @@ Drupal.theme = function(func) {
  * The result is either the JSON object, or an object with 'status' 0 and 'data' an error message.
  */
 Drupal.parseJson = function (data) {
-  if ((data.substring(0, 1) != '{') && (data.substring(0, 1) != '[')) {
-    return { status: 0, data: data.length ? data : Drupal.t('Unspecified error') };
-  }
-  return eval('(' + data + ');');
+    if ((data.substring(0, 1) != '{') && (data.substring(0, 1) != '[')) {
+        return {status: 0, data: data.length ? data : Drupal.t('Unspecified error')};
+    }
+    return eval('(' + data + ');');
 };
 
 /**
@@ -220,23 +219,23 @@ Drupal.parseJson = function (data) {
  * unnecessary upwards scrolling when doing DOM manipulations.
  */
 Drupal.freezeHeight = function () {
-  Drupal.unfreezeHeight();
-  var div = document.createElement('div');
-  $(div).css({
-    position: 'absolute',
-    top: '0px',
-    left: '0px',
-    width: '1px',
-    height: $('body').css('height')
-  }).attr('id', 'freeze-height');
-  $('body').append(div);
+    Drupal.unfreezeHeight();
+    var div = document.createElement('div');
+    $(div).css({
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '1px',
+        height: $('body').css('height')
+    }).attr('id', 'freeze-height');
+    $('body').append(div);
 };
 
 /**
  * Unfreeze the body height
  */
 Drupal.unfreezeHeight = function () {
-  $('#freeze-height').remove();
+    $('#freeze-height').remove();
 };
 
 /**
@@ -245,59 +244,62 @@ Drupal.unfreezeHeight = function () {
  * on query string arguments.
  */
 Drupal.encodeURIComponent = function (item, uri) {
-  uri = uri || location.href;
-  item = encodeURIComponent(item).replace(/%2F/g, '/');
-  return (uri.indexOf('?q=') != -1) ? item : item.replace(/%26/g, '%2526').replace(/%23/g, '%2523').replace(/\/\//g, '/%252F');
+    uri = uri || location.href;
+    item = encodeURIComponent(item).replace(/%2F/g, '/');
+    return (uri.indexOf('?q=') != -1) ? item : item.replace(/%26/g, '%2526').replace(/%23/g, '%2523').replace(/\/\//g, '/%252F');
 };
 
 /**
  * Get the text selection in a textarea.
  */
 Drupal.getSelection = function (element) {
-  if (typeof(element.selectionStart) != 'number' && document.selection) {
-    // The current selection
-    var range1 = document.selection.createRange();
-    var range2 = range1.duplicate();
-    // Select all text.
-    range2.moveToElementText(element);
-    // Now move 'dummy' end point to end point of original range.
-    range2.setEndPoint('EndToEnd', range1);
-    // Now we can calculate start and end points.
-    var start = range2.text.length - range1.text.length;
-    var end = start + range1.text.length;
-    return { 'start': start, 'end': end };
-  }
-  return { 'start': element.selectionStart, 'end': element.selectionEnd };
+    if (typeof(element.selectionStart) != 'number' && document.selection) {
+        // The current selection
+        var range1 = document.selection.createRange();
+        var range2 = range1.duplicate();
+        // Select all text.
+        range2.moveToElementText(element);
+        // Now move 'dummy' end point to end point of original range.
+        range2.setEndPoint('EndToEnd', range1);
+        // Now we can calculate start and end points.
+        var start = range2.text.length - range1.text.length;
+        var end = start + range1.text.length;
+        return {'start': start, 'end': end};
+    }
+    return {'start': element.selectionStart, 'end': element.selectionEnd};
 };
 
 /**
  * Build an error message from ahah response.
  */
-Drupal.ahahError = function(xmlhttp, uri) {
-  if (xmlhttp.status == 200) {
-    if (jQuery.trim($(xmlhttp.responseText).text())) {
-      var message = Drupal.t("An error occurred. \n@uri\n@text", {'@uri': uri, '@text': xmlhttp.responseText });
+Drupal.ahahError = function (xmlhttp, uri) {
+    if (xmlhttp.status == 200) {
+        if (jQuery.trim($(xmlhttp.responseText).text())) {
+            var message = Drupal.t("An error occurred. \n@uri\n@text", {'@uri': uri, '@text': xmlhttp.responseText});
+        }
+        else {
+            var message = Drupal.t("An error occurred. \n@uri\n(no information available).", {
+                '@uri': uri,
+                '@text': xmlhttp.responseText
+            });
+        }
     }
     else {
-      var message = Drupal.t("An error occurred. \n@uri\n(no information available).", {'@uri': uri, '@text': xmlhttp.responseText });
+        var message = Drupal.t("An HTTP error @status occurred. \n@uri", {'@uri': uri, '@status': xmlhttp.status});
     }
-  }
-  else {
-    var message = Drupal.t("An HTTP error @status occurred. \n@uri", {'@uri': uri, '@status': xmlhttp.status });
-  }
-  return message;
+    return message;
 }
 
 // Global Killswitch on the <html> element
 if (Drupal.jsEnabled) {
-  // Global Killswitch on the <html> element
-  $(document.documentElement).addClass('js');
-  // 'js enabled' cookie
-  document.cookie = 'has_js=1; path=/';
-  // Attach all behaviors.
-  $(document).ready(function() {
-    Drupal.attachBehaviors(this);
-  });
+    // Global Killswitch on the <html> element
+    $(document.documentElement).addClass('js');
+    // 'js enabled' cookie
+    document.cookie = 'has_js=1; path=/';
+    // Attach all behaviors.
+    $(document).ready(function () {
+        Drupal.attachBehaviors(this);
+    });
 }
 
 /**
@@ -305,15 +307,15 @@ if (Drupal.jsEnabled) {
  */
 Drupal.theme.prototype = {
 
-  /**
-   * Formats text for emphasized display in a placeholder inside a sentence.
-   *
-   * @param str
-   *   The text to format (plain-text).
-   * @return
-   *   The formatted text (html).
-   */
-  placeholder: function(str) {
-    return '<em>' + Drupal.checkPlain(str) + '</em>';
-  }
+    /**
+     * Formats text for emphasized display in a placeholder inside a sentence.
+     *
+     * @param str
+     *   The text to format (plain-text).
+     * @return
+     *   The formatted text (html).
+     */
+    placeholder: function (str) {
+        return '<em>' + Drupal.checkPlain(str) + '</em>';
+    }
 };

@@ -3,21 +3,25 @@
  * Front-end styling for the display of webforms.
  */
 input.webform-calendar {
-  display: none;
-  padding: 3px;
-  vertical-align: top;
+    display: none;
+    padding: 3px;
+    vertical-align: top;
 }
+
 html.js input.webform-calendar {
-  display: inline;
+    display: inline;
 }
+
 .webform-container-inline label {
-  display: inline;
-  margin-right: 1em;
+    display: inline;
+    margin-right: 1em;
 }
+
 .webform-container-inline div,
 .webform-container-inline div.form-item {
-  display: inline;
+    display: inline;
 }
+
 .webform-container-inline div.description {
-  display: block;
+    display: block;
 }

@@ -4,13 +4,11 @@
  * Rollover edit links for blocks
  */
 
-  div.block.with-block-editing
-  {
+div.block.with-block-editing {
     position: relative;
-  }
+}
 
-  div.block.with-block-editing div.edit
-  {
+div.block.with-block-editing div.edit {
     display: none;
     position: absolute;
     right: 0;
@@ -20,9 +18,8 @@
     padding: 0 2px;
     font-size: 0.75em;
     background-color: #fff;
-  }
+}
 
-  div.block.with-block-editing:hover div.edit
-  {
+div.block.with-block-editing:hover div.edit {
     display: block;
-  }
+}
